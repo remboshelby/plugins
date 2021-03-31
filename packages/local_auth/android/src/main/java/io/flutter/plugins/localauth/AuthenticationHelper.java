@@ -106,7 +106,11 @@ class AuthenticationHelper extends BiometricPrompt.AuthenticationCallback
       activity.getApplication().registerActivityLifecycleCallbacks(this);
     }
     biometricPrompt = new BiometricPrompt(activity, uiThreadExecutor, this);
-    biometricPrompt.authenticate(promptInfo);
+    try {
+      biometricPrompt.authenticate(promptInfo);
+    } catch (Exception e){
+      biometricPrompt.cancelAuthentication();
+    }
   }
 
   /** Cancels the biometric authentication. */
@@ -210,7 +214,11 @@ class AuthenticationHelper extends BiometricPrompt.AuthenticationCallback
           new Runnable() {
             @Override
             public void run() {
-              prompt.authenticate(promptInfo);
+              try {
+                prompt.authenticate(promptInfo);
+              } catch (Exception e){
+                prompt.cancelAuthentication();
+              }
             }
           });
     }
